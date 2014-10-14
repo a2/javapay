@@ -15,13 +15,19 @@
 <body>
   <div class="jumbotron">
     <div class="container-fluid">
-      <h1><img src="{% asset_path logo.svg %}" class="logo" /> Venti <small>for Pebble</small></h1>
+      <div class="col-sm-4 col-sm-push-8 pebble-container">
+        <img src="{% asset_path pebble.png %}" srcset="{% asset_path pebble.png %} 1x, {% asset_path pebble@2x.png %} 2x, {% asset_path pebble@3x.png %} 3x" class="pebble" />
+        <img src="{% asset_path screenshot.png %}" srcset="{% asset_path screenshot.png %} 1x, {% asset_path screenshot@2x.png %} 2x, {% asset_path screenshot@3x.png %} 3x" class="screenshot" />
+      </div>
+      <div class="col-sm-8 col-sm-pull-4 logo-container">
+        <h1><img src="{% asset_path logo.svg %}" class="logo" /> Venti <small>for Pebble</small></h1>
+        <p><a href="https://apps.getpebble.com/applications/52ce3669679f7cb73d000032" role="button" class="btn btn-lg btn-primary btn-download">Download Now</a></p>
 
-      <p><a href="https://apps.getpebble.com/applications/52ce3669679f7cb73d000032" role="button" class="btn btn-lg btn-primary btn-download">Download Now</a></p>
-
+        <footer>
+          Made with <span class="glyphicon glyphicon-heart"></span> by <a href="http://a2.io">Alexsander Akers</a>.
+        </footer>
+      </div>
     </div>
-  </div>
-  <div class="container-fluid">
   </div>
 </body>
 </html>

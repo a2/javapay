@@ -8,8 +8,43 @@ body
 h1
   font-weight: 900
 
+  @media (min-width: $screen-sm-min)
+    margin-top: 100px
+
 h1 small, .btn-download
   font-weight: 700
+
+.pebble-container
+  position: relative
+
+.screenshot
+  position: absolute
+  top: 112px
+  left: 64px
+
+footer
+  height: 20px
+  font-size: 16px
+
+  .glyphicon
+    font-size: 0.8em
+
+  a
+    font-weight: 700
+
+  @media (min-width: $screen-sm-min)
+    margin-top: 50px
+
+@media (max-width: $screen-xs-max)
+  .pebble-container, .pebble
+    height: 203px
+    width: 120px
+
+  .screenshot
+    height: 84px
+    width: 72px
+    top: 56px
+    left: 39px
 
 .logo
   vertical-align: 0px
