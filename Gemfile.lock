@@ -26,6 +26,8 @@ GEM
       sass (>= 3.3.0, < 3.5)
     compass-import-once (1.0.5)
       sass (>= 3.2, < 3.5)
+    daemons (1.1.9)
+    eventmachine (1.0.3)
     execjs (2.2.1)
     fast-stemmer (1.0.2)
     ffi (1.9.6)
@@ -94,6 +96,10 @@ GEM
     sprockets-sass (1.2.0)
       sprockets (~> 2.0)
       tilt (~> 1.1)
+    thin (1.6.3)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0)
+      rack (~> 1.0)
     tilt (1.4.1)
     timers (4.0.1)
       hitimes
@@ -110,3 +116,4 @@ DEPENDENCIES
   jekyll
   jekyll-assets
   rack-jekyll
+  thin
