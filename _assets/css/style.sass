@@ -2,25 +2,26 @@
 @import bootstrap-variables
 @import bootstrap
 
+@mixin pixelate
+  image-rendering: -moz-crisp-edges
+  image-rendering: -o-crisp-edges
+  image-rendering: -webkit-optimize-contrast
+  image-rendering: crisp-edges
+  -ms-interpolation-mode: nearest-neighbor
+
 body
   font-family: "freight-sans-pro", sans-serif
 
 h1
   font-weight: 900
 
-  @media (min-width: $screen-sm-min)
-    margin-top: 100px
-
 h1 small, .btn-download
   font-weight: 700
 
-.pebble-container
-  position: relative
-
 .screenshot
-  position: absolute
-  top: 112px
-  left: 64px
+  @include pixelate
+  border: 1px solid black
+  margin-top: 20px
 
 footer
   height: 20px
@@ -31,26 +32,3 @@ footer
 
   a
     font-weight: 700
-
-  @media (min-width: $screen-sm-min)
-    margin-top: 50px
-
-@media (max-width: $screen-xs-max)
-  .pebble-container, .pebble
-    height: 203px
-    width: 120px
-
-  .screenshot
-    height: 84px
-    width: 72px
-    top: 56px
-    left: 39px
-
-.logo
-  vertical-align: 0px
-
-  @media (max-width: $screen-xs-max)
-    height: 23px
-
-  @media (min-width: $screen-sm-min)
-    height: 40px
