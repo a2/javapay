@@ -1,8 +1,5 @@
 {
   "appKeys": {},
-  "capabilities": [
-    ""
-  ],
   "companyName": "Alexsander Akers",
   "longName": "JavaPay",
   "projectType": "native",
@@ -25,14 +22,20 @@
         "type": "png"
       },
       {
-        "characterRegex": "[CARD #]",
-        "file": "fonts/04B_03__.TTF",
+        "file": "images/AppIconWhite.png",
+        "name": "IMAGE_APP_ICON_WHITE",
+        "targetPlatforms": [
+          "basalt"
+        ],
+        "type": "png"
+      },
+      {
+        "file": "fonts/04B_03.TTF",
         "name": "FONT_PIXEL_8",
         "type": "font"
       },
       {
-        "characterRegex": "[0-9]",
-        "file": "fonts/04B_03__.TTF",
+        "file": "fonts/04B_03.TTF",
         "name": "FONT_PIXEL_16",
         "type": "font"
       }
@@ -42,7 +45,7 @@
   "shortName": "JavaPay",
   "uuid": "7c62a80d-bf8f-4cd0-879c-14b72f41079d",
   "versionCode": 1,
-  "versionLabel": "1.1",
+  "versionLabel": "1.2",
   "watchapp": {
     "watchface": false
   },

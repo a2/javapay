@@ -54,6 +54,12 @@ static void initialize_ui(void) {
   Layer *root_layer = window_get_root_layer(s_window);
 
   s_simplemenulayer_credits = simple_menu_layer_create(layer_get_bounds(root_layer), s_window, s_simplemenusection_sections, ARRAY_LENGTH(s_simplemenusection_sections), NULL);
+#if PBL_PLATFORM_BASALT
+  MenuLayer *menu_layer = simple_menu_layer_get_menu_layer(s_simplemenulayer_credits);
+  menu_layer_set_normal_colors(menu_layer, GColorWhite, GColorWindsorTan);
+  menu_layer_set_highlight_colors(menu_layer, GColorWindsorTan, GColorWhite);
+#endif
+
   layer_add_child(root_layer, simple_menu_layer_get_layer(s_simplemenulayer_credits));
 }
 

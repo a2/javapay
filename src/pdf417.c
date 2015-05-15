@@ -87,7 +87,7 @@ extern GBitmap *pdf417_create_bitmap(const char *input) {
   make_symbol(input, mat);
 
   uint8_t *bytes = calloc(1104, 1);
-  
+
   const int dotw = 2;
   const int doth = 6;
 
@@ -109,13 +109,18 @@ extern GBitmap *pdf417_create_bitmap(const char *input) {
     int end[] = {1};
     p = render_symbol(bytes, px, r, p, dotw, doth, end, ARRAY_LENGTH(end));
   }
-  
+
+#if PBL_SDK_2
   GBitmap *bitmap = calloc(sizeof(GBitmap), 1);
   bitmap->addr = bytes;
   bitmap->bounds = GRect(0, 0, 48, 138);
   bitmap->is_heap_allocated = 1;
   bitmap->row_size_bytes = 8;
   bitmap->version = 1;
-  
+#else
+  GBitmap *bitmap = gbitmap_create_blank(GSize(48, 138), GBitmapFormat1Bit);
+  gbitmap_set_data(bitmap, bytes, GBitmapFormat1Bit, 8, true);
+#endif
+
   return bitmap;
 }
