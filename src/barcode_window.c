@@ -8,13 +8,10 @@ static Window *s_window;
 static char s_value[] = ZEROS ZEROS ZEROS ZEROS;
 static GBitmap *s_bitmap_app_icon;
 static BitmapLayer *s_bitmaplayer_app_icon;
-static GFont s_font_pixel_8;
-static GFont s_font_pixel_16;
 static GBitmap *s_bitmap_barcode;
 static BitmapLayer *s_bitmaplayer_barcode;
-static char s_text_card_number[4][5] = {ZEROS, ZEROS, ZEROS, ZEROS};
-static TextLayer *s_textlayer_card_number[4];
-static TextLayer *s_textlayer_card_number_header;
+static char s_text_card_number[20] = ZEROS " " ZEROS " " ZEROS " " ZEROS;
+static TextLayer *s_textlayer_card_number;
 static bool s_has_appeared = false;
 
 static void handle_window_appear(Window *window);
@@ -41,65 +38,33 @@ void barcode_window_pop(bool animated) {
 
 static void initialize_ui(void) {
   s_window = window_create();
-#if PBL_COLOR
-  window_set_background_color(s_window, GColorWindsorTan);
-#else
-  window_set_background_color(s_window, GColorBlack);
-#endif
+  window_set_background_color(s_window, PBL_IF_COLOR_ELSE(GColorWindsorTan, GColorBlack));
 #if PBL_SDK_2
   window_set_fullscreen(s_window, true);
 #endif
 
-  s_font_pixel_8 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PIXEL_8));
-  s_font_pixel_16 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PIXEL_16));
-
-  s_bitmaplayer_barcode = bitmap_layer_create(GRect(13, 13, 52, 142));
-  bitmap_layer_set_background_color(s_bitmaplayer_barcode, GColorWhite);
+  const GRect barcode_frame = PBL_IF_ROUND_ELSE((GRect(0, 63, 180, 54)), (GRect(0, 57, 144, 54)));
+  s_bitmaplayer_barcode = bitmap_layer_create(barcode_frame);
   bitmap_layer_set_alignment(s_bitmaplayer_barcode, GAlignCenter);
+  bitmap_layer_set_background_color(s_bitmaplayer_barcode, GColorWhite);
 
-#if PBL_PLATFORM_BASALT
-  s_bitmap_app_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_APP_ICON_WHITE);
-#else
-  s_bitmap_app_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_APP_ICON);
-#endif
-  s_bitmaplayer_app_icon = bitmap_layer_create(GRect(95, 25, 21, 28));
+  const GRect app_icon_frame = PBL_IF_ROUND_ELSE((GRect(30, 33, 119, 25)), (GRect(12, 25, 119, 25)));
+  s_bitmap_app_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_JAVAPAY);
+  s_bitmaplayer_app_icon = bitmap_layer_create(app_icon_frame);
   bitmap_layer_set_bitmap(s_bitmaplayer_app_icon, s_bitmap_app_icon);
-#if PBL_PLATFORM_BASALT
-  bitmap_layer_set_compositing_mode(s_bitmaplayer_app_icon, GCompOpSet);
-#else
-  bitmap_layer_set_compositing_mode(s_bitmaplayer_app_icon, GCompOpAssignInverted);
-#endif
+  bitmap_layer_set_compositing_mode(s_bitmaplayer_app_icon, PBL_IF_COLOR_ELSE(GCompOpSet, GCompOpAssign));
 
-  s_textlayer_card_number_header = text_layer_create(GRect(86, 83 - 12, 39, 16));
-#if PBL_COLOR
-  text_layer_set_background_color(s_textlayer_card_number_header, GColorWindsorTan);
-#else
-  text_layer_set_background_color(s_textlayer_card_number_header, GColorBlack);
-#endif
-  text_layer_set_font(s_textlayer_card_number_header, s_font_pixel_8);
-  text_layer_set_text(s_textlayer_card_number_header, "CARD #");
-  text_layer_set_text_alignment(s_textlayer_card_number_header, GTextAlignmentCenter);
-  text_layer_set_text_color(s_textlayer_card_number_header, GColorWhite);
-
-  for (int i = 0; i < 4; i++) {
-    s_textlayer_card_number[i] = text_layer_create(GRect(75, 91 + i * 16 - 12, 60, 16));
-#if PBL_COLOR
-    text_layer_set_background_color(s_textlayer_card_number[i], GColorWindsorTan);
-#else
-    text_layer_set_background_color(s_textlayer_card_number[i], GColorBlack);
-#endif
-    text_layer_set_font(s_textlayer_card_number[i], s_font_pixel_16);
-    text_layer_set_text_alignment(s_textlayer_card_number[i], GTextAlignmentCenter);
-    text_layer_set_text_color(s_textlayer_card_number[i], GColorWhite);
-  }
+  const GRect card_number_frame = PBL_IF_ROUND_ELSE((GRect(19, 121, 142, 20)), (GRect(1, 113, 142, 20)));
+  s_textlayer_card_number = text_layer_create(card_number_frame);
+  text_layer_set_background_color(s_textlayer_card_number, PBL_IF_COLOR_ELSE(GColorWindsorTan, GColorBlack));
+  text_layer_set_font(s_textlayer_card_number, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
+  text_layer_set_text_alignment(s_textlayer_card_number, GTextAlignmentCenter);
+  text_layer_set_text_color(s_textlayer_card_number, GColorWhite);
 
   Layer *root_layer = window_get_root_layer(s_window);
   layer_add_child(root_layer, (Layer *)s_bitmaplayer_barcode);
   layer_add_child(root_layer, (Layer *)s_bitmaplayer_app_icon);
-  layer_add_child(root_layer, (Layer *)s_textlayer_card_number_header);
-  for (int i = 0; i < 4; i++) {
-    layer_add_child(root_layer, (Layer *)s_textlayer_card_number[i]);
-  }
+  layer_add_child(root_layer, (Layer *)s_textlayer_card_number);
 }
 
 static void persist_read_barcode(void) {
@@ -111,9 +76,9 @@ static void persist_read_barcode(void) {
   bitmap_layer_set_bitmap(s_bitmaplayer_barcode, s_bitmap_barcode);
 
   for (int i = 0; i < 4; i++) {
-    memcpy(s_text_card_number[i], s_value + 4 * i, 4);
-    text_layer_set_text(s_textlayer_card_number[i], s_text_card_number[i]);
+    memcpy(s_text_card_number + 5 * i, s_value + 4 * i, 4);
   }
+  text_layer_set_text(s_textlayer_card_number, s_text_card_number);
 }
 
 static void app_timer_callback(void *data) {
@@ -142,12 +107,7 @@ static void handle_window_unload(Window *window) {
   gbitmap_destroy(s_bitmap_app_icon);
   bitmap_layer_destroy(s_bitmaplayer_app_icon);
   bitmap_layer_destroy(s_bitmaplayer_barcode);
-  fonts_unload_custom_font(s_font_pixel_8);
-  fonts_unload_custom_font(s_font_pixel_16);
-
-  for (int i = 0; i < 4; i++) {
-    text_layer_destroy(s_textlayer_card_number[i]);
-  }
+  text_layer_destroy(s_textlayer_card_number);
 
   if (s_bitmap_barcode != NULL) {
     gbitmap_destroy(s_bitmap_barcode), s_bitmap_barcode = NULL;

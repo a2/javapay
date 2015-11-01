@@ -46,8 +46,8 @@ static void initialize_ui(void) {
     .get_num_sections = menu_layer_get_number_sections_callback,
     .select_click = menu_layer_select_callback,
   });
-#if PBL_PLATFORM_BASALT
-  menu_layer_set_normal_colors(s_menulayer, GColorWhite, GColorWindsorTan);
+#if PBL_COLOR
+  menu_layer_set_normal_colors(s_menulayer, GColorWhite, GColorChromeYellow);
   menu_layer_set_highlight_colors(s_menulayer, GColorWindsorTan, GColorWhite);
 #endif
   menu_layer_set_click_config_onto_window(s_menulayer, s_window);
@@ -88,11 +88,7 @@ static void menu_layer_draw_header_callback(GContext *ctx, const Layer *cell_lay
 
   GRect draw_rect = layer_get_bounds(cell_layer);
   if (draw_header) {
-#if PBL_COLOR
-    graphics_context_set_stroke_color(ctx, GColorWindsorTan);
-#else
-    graphics_context_set_stroke_color(ctx, GColorBlack);
-#endif
+    graphics_context_set_stroke_color(ctx, PBL_IF_COLOR_ELSE(GColorWindsorTan, GColorBlack));
 
     graphics_draw_line(ctx, GPoint(0, 1), GPoint(draw_rect.size.w, 1));
     draw_rect.origin.y++;
@@ -103,7 +99,7 @@ static void menu_layer_draw_header_callback(GContext *ctx, const Layer *cell_lay
     graphics_context_set_text_color(ctx, GColorBlack);
 #endif
 
-    graphics_draw_text(ctx, "Version 1.2", fonts_get_system_font(FONT_KEY_GOTHIC_14), draw_rect, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+    graphics_draw_text(ctx, "Version 1.3", fonts_get_system_font(FONT_KEY_GOTHIC_14), draw_rect, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
   }
 }
 
@@ -117,7 +113,7 @@ static void menu_layer_draw_row_callback(GContext *ctx, const Layer *cell_layer,
 #endif
 
   const GTextOverflowMode overflow = GTextOverflowModeWordWrap;
-  const GTextAlignment align = GTextAlignmentLeft;
+  const GTextAlignment align = PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft);
 
   switch (cell_index->section) {
     case 0:
@@ -144,11 +140,7 @@ static int16_t menu_layer_get_header_height_callback(struct MenuLayer *menu_laye
     case 0:
       return 0;
     case 1:
-#if PBL_COLOR
-      return 3;
-#else
-      return 0;
-#endif
+      return PBL_IF_COLOR_ELSE(3, 0);
     case 2:
       return 18;
     default:

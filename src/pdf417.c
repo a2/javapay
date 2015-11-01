@@ -71,8 +71,8 @@ static int render_symbol(uint8_t *bytes, int px, int py, int p, int dotw, int do
     if (i & 1) {
       for (int xi = 0; xi < dotw * w; xi++) {
         for (int yi = 0; yi < doth; yi++) {
-          int row_offset = 8 * (137 - (px + dotw * p + xi));
-          int col_offset = py + yi;
+          int row_offset = 20 * (py + yi);
+          int col_offset = px + dotw * p + xi;
           bytes[row_offset + col_offset / 8] |= 1 << (col_offset % 8);
         }
       }
@@ -82,11 +82,11 @@ static int render_symbol(uint8_t *bytes, int px, int py, int p, int dotw, int do
   return p;
 }
 
-extern GBitmap *pdf417_create_bitmap(const char *input) {
+GBitmap *pdf417_create_bitmap(const char *input) {
   int mat[8][3];
   make_symbol(input, mat);
 
-  uint8_t *bytes = calloc(1104, 1);
+  uint8_t *bytes = calloc(960, 1);
 
   const int dotw = 2;
   const int doth = 6;
@@ -113,13 +113,13 @@ extern GBitmap *pdf417_create_bitmap(const char *input) {
 #if PBL_SDK_2
   GBitmap *bitmap = calloc(sizeof(GBitmap), 1);
   bitmap->addr = bytes;
-  bitmap->bounds = GRect(0, 0, 48, 138);
+  bitmap->bounds = GRect(0, 0, 138, 48);
   bitmap->is_heap_allocated = 1;
-  bitmap->row_size_bytes = 8;
+  bitmap->row_size_bytes = 20;
   bitmap->version = 1;
 #else
-  GBitmap *bitmap = gbitmap_create_blank(GSize(48, 138), GBitmapFormat1Bit);
-  gbitmap_set_data(bitmap, bytes, GBitmapFormat1Bit, 8, true);
+  GBitmap *bitmap = gbitmap_create_blank(GSize(138, 48), GBitmapFormat1Bit);
+  gbitmap_set_data(bitmap, bytes, GBitmapFormat1Bit, 20, true);
 #endif
 
   return bitmap;
